@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
-const  User = require("../../models/User");
+const { User, ChannelUser } = require("../../models");
 
 // Environment variable loader setup
 require('dotenv').config();
 
-const { genPassword, validPassword } = require("../passwordUtils");
+const { genPassword, validPassword } = require("../../utils/passwordUtils");
 
 /**
  * Middleware in charge of user's subscription
@@ -21,12 +21,26 @@ exports.signup = (req, res) => {
     }
 
     User.create(newUser)
-    .then(() => {
-      res.status(200).send({ message: "Successfully created!" });
-    })
-    .catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+      .then(user => {
+        let payload = {
+          userMail: user.email,
+          channelsList: []
+        }
+
+        let token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: 3600 * 24 * 7
+        });
+
+        res.status(200).send({
+          username: user.username,
+          email: user.email,
+          roles: "User",
+          accessToken: token
+        });
+      })
+      .catch(err => {
+          res.status(500).send({ message: err.message });
+      });
 };
 
 /**
@@ -45,6 +59,7 @@ exports.signin = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
+      console.info(user);
       var passwordIsValid = validPassword(
         req.body.password,
         user.password,
@@ -58,12 +73,19 @@ exports.signin = (req, res) => {
         });
       }
 
-      let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      let payload = {
+        userMail: user.email,
+        channelsList: [ChannelUser.findAll({
+          where: { UserEmail: user.email },
+          attributes: [ 'ChannelId' ]
+        })]
+      }
+
+      let token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: 3600 * 24 * 7
       });
 
       res.status(200).send({
-        id: user.id,
         username: user.username,
         email: user.email,
         roles: "User",
@@ -71,6 +93,6 @@ exports.signin = (req, res) => {
       });
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({ message: err.name });
     });
 };

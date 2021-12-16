@@ -2,13 +2,10 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { ThemeProvider } from '@mui/material/styles';
 
+import { ThemeProvider } from '@mui/material/styles';
 import theme from '../styles/theme';
 import Nav from './Nav';
 

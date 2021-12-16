@@ -1,6 +1,6 @@
 const {DataTypes} = require('sequelize');
 
-const MessageFields = {
+const ChannelMessageFields = {
   content: {
       type: DataTypes.STRING,
       allowNull: false
@@ -10,9 +10,9 @@ const MessageFields = {
     allowNull: true
   },
   recipient: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false
   }
 };
 
-module.exports = MessageFields;
+module.exports = ChannelMessageFields;

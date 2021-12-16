@@ -15,11 +15,11 @@ import AuthService from '../services/Auth';
 import theme from '../styles/theme';
 
 export default function SignUp() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
+  const [username, setUsername] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [successful, setSuccessful] = React.useState(false);
+  const [message, setMessage] = React.useState("");
 
   const onChangeUsername = (e) => {
     const username = e.target.value;
@@ -83,6 +83,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Inscription
           </Typography>
+
           <Box component="form" noValidate onSubmit={handleRegister} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item>

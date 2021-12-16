@@ -11,18 +11,61 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
 
+import AuthService from '../services/Auth';
 import theme from '../styles/theme';
 
-export default function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+export default function SignIn(props) {
+    const form = useRef();
+    const checkBtn = useRef();
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const onChangeUsername = (e) => {
+        const username = e.target.value;
+        setUsername(username);
+    };
+
+    const onChangePassword = (e) => {
+        const password = e.target.value;
+        setPassword(password);
+    };
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        setMessage("");
+        setLoading(true);
+
+        form.current.validateAll();
+
+        if (checkBtn.current.context._errors.length === 0) {
+        AuthService.login(username, password)
+        .then(() => {
+            props.history.push("/profile");
+            window.location.reload();
+            },
+            (error) => {
+            const resMessage =
+                (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+                error.message ||
+                error.toString();
+
+            setLoading(false);
+            setMessage(resMessage);
+            }
+        );
+        } else {
+            setLoading(false);
+        }
+    };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    };
 
   return (
     <ThemeProvider theme={theme}>
@@ -42,7 +85,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" ref={form} onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required

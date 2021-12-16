@@ -1,30 +1,33 @@
-require("dotenv").config();
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DB_URL);
+const {DataTypes} = require('sequelize');
 
-const User = sequelize.define('user', {
+const UserFields = {
   email: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
+      primaryKey: true,
       allowNull: false,
-      unique: true
+      unique: true,
+      isEmail: true
   },
   username: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: true,
+    min: 3,
+    max: 17,
+    is: /^[a-z0-9_]$/gi
   },
   password: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       allowNull: false
   },
   salt: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       allowNull: false
   },
   picPath: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     defaultValue: 'default.png'
   }
-});
+};
 
-module.exports = User;
+module.exports = UserFields;
