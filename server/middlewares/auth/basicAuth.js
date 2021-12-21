@@ -31,12 +31,18 @@ exports.signup = (req, res) => {
           expiresIn: 3600 * 24 * 7
         });
 
-        res.status(200).send({
-          username: user.username,
-          email: user.email,
-          roles: "User",
-          accessToken: token
-        });
+        let newGeneralMember = ChannelUser.build({ UserEmail: user.email, ChannelId: 1 });
+        newGeneralMember.save()
+          .then(() => res.status(200).send({
+                                            username: user.username,
+                                            email: user.email,
+                                            roles: "User",
+                                            accessToken: token
+                                          })
+          )
+          .catch(err => {
+              res.status(500).send({ message: err.message });
+          });
       })
       .catch(err => {
           res.status(500).send({ message: err.message });

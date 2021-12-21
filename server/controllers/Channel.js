@@ -27,6 +27,11 @@ class ChannelController {
         let newMember = ChannelUser.build(ChannelUserObject);
     }
 
+    createNewInvitation(InvitationObject) {
+        let { channel, initiator, guest } = InvitationObject;
+        
+    }
+
     /**
      * Find all members of a specified channel
      * @param {*} id specified channel id
